@@ -1,0 +1,12 @@
+description: Centralized service for maintaining configuration information, naming,
+  providing distributed synchronization, and providing group services.
+home: https://zookeeper.apache.org/
+icon: https://zookeeper.apache.org/images/zookeeper_small.gif
+maintainers:
+- email: gardner.vickers@onyxplatform.org
+  name: Gardner Vickers
+name: zookeeper
+sources:
+- https://github.com/apache/zookeeper
+- https://github.com/kubernetes/contrib/tree/master/statefulset/zookeeper
+version: 0.0.1
