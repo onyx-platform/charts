@@ -63,7 +63,7 @@ unset limit
 
 
 # Check for memory options and calculate a sane default if not given
-max_memory() {
+jmax_memory() {
   # Check whether -Xmx is already given in JAVA_OPTIONS. Then we dont
   # do anything here
   if echo "${JAVA_OPTIONS}" | grep -q -- "-Xmx"; then
@@ -109,7 +109,7 @@ cpu_core_tunning() {
 }
 
 get_cgroup_jvm_limits (){
-    echo "$(max_memory) $(diagnostics) $(cpu_core_tunning)" | awk '$1=$1'
+    echo "$(jmax_memory) $(diagnostics) $(cpu_core_tunning)" | awk '$1=$1'
 }
 
 # Echo options, trimming trailing and multiple spaces
