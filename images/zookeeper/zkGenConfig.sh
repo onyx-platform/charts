@@ -141,10 +141,16 @@ function create_log_props () {
 }
 
 function create_java_env() {
-    rm -f $JAVA_ENV_FILE
     echo "Creating JVM configuration file"
+    local container_limits_file="/opt/zookeeper/bin/container-limits"
+    rm -f $JAVA_ENV_FILE
+    if [ -r "${container_limits_file}" ]; then
+        echo "Deriving JVM settings from container"
+        echo "JVMFLAGS=\"$(sh ${container_limits_file})\"" >> $JAVA_ENV_FILE
+    else
+        echo "JVMFLAGS=\"-Xmx$ZK_HEAP_SIZE -Xms$ZK_HEAP_SIZE\"" >> $JAVA_ENV_FILE
+    fi
     echo "ZOO_LOG_DIR=$ZK_LOG_DIR" >> $JAVA_ENV_FILE
-    echo "JVMFLAGS=\"-Xmx$ZK_HEAP_SIZE -Xms$ZK_HEAP_SIZE\"" >> $JAVA_ENV_FILE
     echo "Wrote JVM configuration to $JAVA_ENV_FILE"
 }
 
