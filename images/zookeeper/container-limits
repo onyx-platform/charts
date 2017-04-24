@@ -113,5 +113,5 @@ get_opts (){
 }
 
 # Echo options, trimming trailing and multiple spaces
-echo "container-limits calculated the following JVM options:"
+##echo "container-limits calculated the following JVM options:"
 echo $(get_opts)
