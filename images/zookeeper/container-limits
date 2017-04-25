@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# This script was generated from various parts of the scripts available from
+# Fabric8 here https://github.com/fabric8io-images/java
+
 # Detected container limits
 # If found these are exposed as the following environment variables:
 #
