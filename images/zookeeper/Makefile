@@ -1,4 +1,4 @@
-VERSION=3
+VERSION=4
 PROJECT_ID=zookeeper
 PROJECT=997690819742.dkr.ecr.us-east-1.amazonaws.com/${PROJECT_ID}
 
