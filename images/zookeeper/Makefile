@@ -8,6 +8,8 @@ build:
 	docker build --pull -t ${PROJECT}:${VERSION} .
 
 push: build
-	 docker push ${PROJECT}:${VERSION}
+	docker tag ${PROJECT}:${VERSION} ${PROJECT}:latest
+	docker push ${PROJECT}:${VERSION}
+	docker push ${PROJECT}:latest
 
 .PHONY: all build push

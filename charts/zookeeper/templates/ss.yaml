@@ -18,46 +18,39 @@ spec:
         component: "{{.Release.Name}}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
-        {{- if eq .Values.AntiAffinity "hard"}}
-        scheduler.alpha.kubernetes.io/affinity: >
-            {
-              "podAntiAffinity": {
-                "requiredDuringSchedulingIgnoredDuringExecution": [{
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "component",
-                      "operator": "In",
-                      "values": ["{{.Release.Name}}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }]
-              }
-            }
-        {{- else if eq .Values.AntiAffinity "soft"}}
-        scheduler.alpha.kubernetes.io/affinity: >
-            {
-              "podAntiAffinity": {
-                "prefferedDuringSchedulingIgnoredDuringExecution": [{
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "component",
-                      "operator": "In",
-                      "values": ["{{.Release.Name}}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }]
-              }
-            }
-        {{- end}}
     spec:
+      {{- if eq .Values.AntiAffinity "hard"}}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpression:
+                - key: component
+                  operator: In
+                  values:
+                    - "{{.Release.Name}}"
+            topologyKey: kubernetes.io/hostname
+      {{- else if eq .Values.AntiAffinity "soft"}}
+      affinity:
+        podAntiAffinity:
+          prefferedDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpression:
+                - key: component
+                  operator: In
+                  values:
+                    - "{{.Release.Name}}"
+            topologyKey: kubernetes.io/hostname
+      {{- end}}
       containers:
       - name: k8szk
         imagePullPolicy: {{.Values.ImagePullPolicy}}
-        image: gcr.io/google_samples/k8szk:v2
+        image: {{ .Values.Image}}:{{ .Values.Tag }}
         resources:
           requests:
+            memory: {{.Values.Memory}}
+            cpu: {{.Values.Cpu}}
+          limits:
             memory: {{.Values.Memory}}
             cpu: {{.Values.Cpu}}
         ports:
@@ -68,6 +61,8 @@ spec:
         - containerPort: {{.Values.LeaderElectionPort}}
           name: leader-election
         env:
+        - name : JAVA_MAX_MEM_RATIO
+          value: "{{.Values.HeapRatio}}"
         - name : ZK_REPLICAS
           value: "{{.Values.Servers}}"
         - name : ZK_HEAP_SIZE
@@ -141,6 +136,11 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: datadir
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}"
       annotations:
         {{- if .Values.StorageClass}}
         volume.beta.kubernetes.io/storage-class: {{.Values.StorageClass | quote}}

@@ -10,7 +10,6 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}"
 data:
-  jvm.heap: {{.Values.Heap}}
   tick: "{{.Values.TickTimeMs}}"
   init: "{{.Values.InitTicks}}"
   sync: "{{.Values.SyncTicks}}"
