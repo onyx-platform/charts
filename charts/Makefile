@@ -24,4 +24,4 @@ sync:
 	@aws s3 sync --delete ./pyroclast s3://charts.pyroclast.io
 
 clean:
-	@rm -rf pyroclastm
+	@rm -rf pyroclast
