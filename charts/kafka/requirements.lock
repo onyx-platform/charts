@@ -1,6 +1,10 @@
 dependencies:
-- name: zookeeper
-  repository: http://storage.googleapis.com/kubernetes-charts-incubator
-  version: 0.1.1
-digest: sha256:8210ab022b7aaac63d45df4db7deb770bf08c5d7e24c924764648c55be5e0905
-generated: 2016-10-23T22:25:39.161124014-05:00
+- condition: ""
+  enabled: false
+  import-values: null
+  name: zookeeper
+  repository: https://s3.amazonaws.com/charts.pyroclast.io
+  tags: null
+  version: 0.0.1
+digest: sha256:c2abf455a639c04c386969064fa831ba168ebd0da4b54fb922a5d926a27ff9eb
+generated: 2017-04-25T19:29:38.067027535-04:00
