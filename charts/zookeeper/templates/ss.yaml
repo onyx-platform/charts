@@ -24,7 +24,7 @@ spec:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
-              matchExpression:
+              matchExpressions:
                 - key: component
                   operator: In
                   values:
@@ -35,7 +35,7 @@ spec:
         podAntiAffinity:
           prefferedDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
-              matchExpression:
+              matchExpressions:
                 - key: component
                   operator: In
                   values:

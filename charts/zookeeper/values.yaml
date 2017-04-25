@@ -5,11 +5,11 @@
 Image: 997690819742.dkr.ecr.us-east-1.amazonaws.com/zookeeper
 Tag: 4
 Servers: 3
-Cpu: "1"
-Memory: "4Gi"
-HeapRatio: 50
+Cpu: "100m"
+Memory: "512Mi"
+HeapRatio: 70
 Storage: "50Gi"
-#StorageClass : default
+StorageClass : default
 ServerPort: 2888
 LeaderElectionPort: 3888
 ClientPort: 2181
