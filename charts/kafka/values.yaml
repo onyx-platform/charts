@@ -11,7 +11,7 @@ Storage: "1Gi"
 DataDirectory: "/opt/kafka/data"
 Component: "kafka"
 
-zookeeper:
-  Name: "zk"
-  Component: "zk"
+# zookeeper:
+#   Name: "zk"
+#   Component: "zk"
 AntiAffinity: "soft"

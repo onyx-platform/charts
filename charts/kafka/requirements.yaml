@@ -1,4 +1,0 @@
-dependencies:
-- name: zookeeper
-  version: 0.0.4
-  repository: https://s3.amazonaws.com/charts.pyroclast.io
