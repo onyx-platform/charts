@@ -119,9 +119,7 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kfRunServer.sh /etc/opt/kafka/server.properties "
-        - "--override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ "
-        - "--override broker.id=${HOSTNAME##*-}"
+        - "./kfRunServer.sh /etc/opt/kafka/server.properties --override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"

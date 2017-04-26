@@ -1,1 +1,3 @@
 charts/pyroclast/*
+charts/kafka/charts/*
+charts/zookeeper/charts/*
