@@ -2,7 +2,7 @@ CHARTS := $(shell find . -path '*/Chart.yaml' | tr '\n' ' ' | sed -E 's:\./|/Cha
 DEP_CHARTS := $(shell find . -path '*/requirements.yaml' | tr '\n' ' ' |  sed -E 's:\./|/requirements\.yaml::g')
 
 .PHONY: clean all package makepath copy index sync acl dependency-update
-all: package makepath copy index sync
+all: package makepath copy index sync clean
 
 dependency-update:
 	helm init -c
