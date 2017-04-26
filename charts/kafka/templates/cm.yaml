@@ -9,8 +9,8 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}"
-server.properties:
-  |
+data:
+  server.properties: |
     ############################# Server Basics #############################
 
     # The id of the broker. This must be set to a unique integer for each broker.
@@ -104,11 +104,7 @@ server.properties:
 
     ############################# Zookeeper #############################
 
-    # Zookeeper connection string (see zookeeper docs for details).
-    # This is a comma separated host:port pairs, each corresponding to a zk
-    # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
-    # You can also append an optional chroot string to the urls to specify the
-    # root directory for all kafka znodes.
+    # Overrided by StatefulSet bootstrap process.
     ##zookeeper.connect=zookeeper:2181
 
     # Timeout in ms for connecting to zookeeper
