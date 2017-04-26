@@ -59,9 +59,8 @@ spec:
         component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
-        pod.alpha.kubernetes.io/init-containers: '[
-        ]'
     spec:
+      {{- if eq .Values.AntiAffinity "hard"}}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -71,7 +70,20 @@ spec:
                   operator: In
                   values:
                     - "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
-             topologyKey: kubernetes.io/hostname
+      {{- else if eq .Values.AntiAffinity "soft"}}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: component
+                      operator: In
+                      values:
+                        - "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+                topologyKey: kubernetes.io/hostname
+      {{- end}}
       containers:
       - name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
@@ -85,7 +97,6 @@ spec:
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
-        name: liveness
         readinessProbe:
           exec:
             command:
@@ -95,7 +106,6 @@ spec:
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
-        name: readiness
         ports:
         - containerPort: 9092
           name: kafka
@@ -107,10 +117,10 @@ spec:
             cpu: "{{ .Values.Cpu }}"
             memory: "{{ .Values.Memory }}"
         command:
-        - sh
+        - bash
         - -c
-        - "./bin/kafka-server-start.sh /etc/opt/kafka/server.properties \"
-        - "--override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ \"
+        - "./bin/kafka-server-start.sh /etc/opt/kafka/server.properties \ "
+        - "--override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ \ "
         - "--override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir

@@ -14,3 +14,4 @@ Component: "kafka"
 zookeeper:
   Name: "zk"
   Component: "zk"
+AntiAffinity: "soft"
