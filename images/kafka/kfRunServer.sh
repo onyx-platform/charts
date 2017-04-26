@@ -22,5 +22,5 @@ else
     exit 1
 fi
 
-export KAFKA_HEAP_OPTS="$KAFKA_JVM_OPTS"
+export KAFKA_HEAP_OPTS="$KAFKA_JVM_OPTS -javaagent:jmx_prometheus_javaagent.jar=1234:/opt/config/prometheus/kafka.yaml"
 ./bin/kafka-server-start.sh "$@"
