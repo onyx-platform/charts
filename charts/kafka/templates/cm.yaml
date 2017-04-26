@@ -14,7 +14,8 @@ data:
     ############################# Server Basics #############################
 
     # The id of the broker. This must be set to a unique integer for each broker.
-    ##broker.id=0
+    # Overrided in the bootstrapping process
+    broker.id=0
 
     # Switch to enable topic deletion or not, default value is false
     #delete.topic.enable=true
@@ -105,7 +106,7 @@ data:
     ############################# Zookeeper #############################
 
     # Overrided by StatefulSet bootstrap process.
-    ##zookeeper.connect=zookeeper:2181
+    zookeeper.connect=zookeeper:2181
 
     # Timeout in ms for connecting to zookeeper
     zookeeper.connection.timeout.ms=6000
