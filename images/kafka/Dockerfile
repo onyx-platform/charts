@@ -14,7 +14,7 @@ WORKDIR /opt/kafka
 ENTRYPOINT ["bin/kafka-server-start.sh"]
 
 ADD https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.9/jmx_prometheus_javaagent-0.9.jar /opt/kafka/jmx_prometheus_javaagent.jar
-ADD container-limits /opt/kafka/
+ADD container-limits kfRunServer.sh /opt/kafka/
 
 RUN sed -i 's/zookeeper.connect=localhost:2181/zookeeper.connect=zookeeper:2181/' config/server.properties
 CMD ["config/server.properties"]

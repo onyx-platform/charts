@@ -109,10 +109,18 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh /etc/opt/kafka/server.properties \"
+        - "--override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ \"
+        - "--override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"
+        - name: config
+          mountPath: /etc/opt/kafka
+      volumes:
+        - name: config
+          configMap:
+            name: "{{ printf "cm-kf-%s" .Release.Name | trunc 24 }}"
   volumeClaimTemplates:
   - metadata:
       name: datadir
