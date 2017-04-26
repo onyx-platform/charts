@@ -117,10 +117,10 @@ spec:
             cpu: "{{ .Values.Cpu }}"
             memory: "{{ .Values.Memory }}"
         command:
-        - bash
+        - sh
         - -c
-        - "./bin/kafka-server-start.sh /etc/opt/kafka/server.properties \ "
-        - "--override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ \ "
+        - "./bin/kfRunServer.sh /etc/opt/kafka/server.properties "
+        - "--override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ "
         - "--override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir

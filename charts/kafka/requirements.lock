@@ -5,6 +5,6 @@ dependencies:
   name: zookeeper
   repository: https://s3.amazonaws.com/charts.pyroclast.io
   tags: null
-  version: 0.0.2
-digest: sha256:f1595509102978c9f13224e6c4c3ab1947c24bf18e6495f79462cdb8cd20a91f
-generated: 2017-04-26T10:54:54.278286338-04:00
+  version: 0.0.4
+digest: sha256:1ec54d375ea55a9afdc52e352a350bd4b57d8080275ac9279efcc8aa7a92abe3
+generated: 2017-04-26T11:49:06.168661309-04:00

@@ -1,7 +1,7 @@
 Name: "kf"
 Replicas: 3
 Image: "onyxplatform/kafka"
-ImageTag: "2"
+ImageTag: "3"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "512Mi"
