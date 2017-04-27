@@ -33,6 +33,11 @@ metadata:
 spec:
   ports:
   - port: 9092
+    name: broker
+  - name: metrics
+    protocol: TCP
+    port: 1234
+    targetPort: metrics
   selector:
     component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
     app: kafka
@@ -84,6 +89,9 @@ spec:
                         - "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
                 topologyKey: kubernetes.io/hostname
       {{- end}}
+      tolerations:
+        - key: "dedicated"
+          value: "kafka"
       containers:
       - name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
@@ -107,8 +115,11 @@ spec:
           initialDelaySeconds: 30
           timeoutSeconds: 5
         ports:
-        - containerPort: 9092
-          name: kafka
+        - name: kafka
+          containerPort: 9092
+        - name: metrics
+          containerPort: 1234
+          protocol: TCP
         resources:
           limits:
             cpu: "{{ .Values.MaxCpu }}"

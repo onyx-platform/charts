@@ -44,6 +44,9 @@ spec:
                         - "{{.Release.Name}}"
                 topologyKey: kubernetes.io/hostname
       {{- end}}
+      tolerations:
+        - key: "dedicated"
+          value: "zookeeper"
       containers:
       - name: k8szk
         imagePullPolicy: {{.Values.ImagePullPolicy}}
