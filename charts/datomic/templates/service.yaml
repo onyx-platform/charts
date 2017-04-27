@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ printf "datomic-%s" .Release.Name | trunc 24 }}"
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  selector:
+    component: "{{ printf "%s-datomic" .Release.Name | trunc 24 }}"
+  type: ClusterIP
+  ports:
+    -
+      name: datomic
+      protocol: "TCP"
+      port: 4334
+      targetPort: 4334
+    -
+      name: datomic2
+      protocol: "TCP"
+      port: 4335
+      targetPort: 4335
+    -
+      name: datomic3
+      protocol: "TCP"
+      port: 4336
+      targetPort: 4336
