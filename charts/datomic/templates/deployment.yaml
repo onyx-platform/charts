@@ -1,0 +1,96 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ printf "datomic-%s" .Release.Name  | trunc 24 }}"
+  annotations:
+    helm.sh/created: {{.Release.Time.Seconds | quote }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: "{{ printf "%s-datomic" .Release.Name | trunc 24 }}"
+    spec:
+      imagePullSecrets:
+        - name: pyroclast.io
+      containers:
+      - name: datomic
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - "./datomicRun.sh"
+          - "/etc/config/transactor.properties"
+        volumeMounts:
+          - name: data
+            mountPath: /etc/data
+          - name: config
+            mountPath: /etc/config
+        ports:
+          - containerPort: 4334
+        env:
+          - name : JAVA_MAX_MEM_RATIO
+            value: "{{.Values.HeapRatio}}"
+        resources:
+          requests:
+            memory: {{.Values.Memory}}
+            cpu: {{.Values.Cpu}}
+          limits:
+            memory: {{.Values.Memory}}
+            cpu: {{.Values.Cpu}}
+      volumes:
+        - name: config
+          configMap:
+            name: "{{ printf "cm-datomic-%s" .Release.Name | trunc 24 }}"
+        - name: data
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ printf "cm-datomic-%s" .Release.Name | trunc 24 }}"
+data:
+  transactor.properties: |-
+    protocol={{ .Values.Protocol }}
+    host=0.0.0.0
+    port=4334
+    alt-host={{ printf "datomic-%s" .Release.Name | trunc 24 }}
+
+    license-key={{ .Values.LicenseKey }}
+
+    aws-dynamodb-table={{ printf "datomic.%s" .Release.Name  | trunc 24 }}
+
+    {{ if .Values.TableRegion }}
+    aws-dynamodb-region={{ .Values.TableRegion }}
+    {{ end }}
+
+    {{ if .Values.OverrideEndpoint }}
+    aws-dynamodb-override-endpoint={{ .Values.OverrideEndpoint }}
+    {{ end }}
+    aws-transactor-role={{ .Values.TransactorRole }}
+    aws-peer-role={{ .Values.TransactorRole }}
+    memory-index-threshold=32m
+    memory-index-max=256m
+    object-cache-max=128m
+    pid-file=/transactor.pid
+
+    ####################
+    # protocol=ddb-local
+    # host=0.0.0.0
+    # port=4334
+    # alt-host=datomic
+
+    # #aws-dynamodb-region=cn-north-1
+    # aws-dynamodb-override-endpoint=dynamodb.cn-north-1.amazonaws.com.cn
+    # memory-index-threshold=32m
+    # memory-index-max=256m
+    # object-cache-max=128m
+    # pid-file=/transactor.pid
+
+    # aws-dynamodb-table=china.datomic
+    # aws-transactor-role=K8sDatomicTransactor
+    # aws-peer-role=K8sDatomicPeer

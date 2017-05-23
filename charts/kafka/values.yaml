@@ -1,0 +1,20 @@
+Name: "kf"
+Replicas: 3
+Image: "onyxplatform/kafka"
+ImageTag: "4"
+ImagePullPolicy: "Always"
+Cpu: "100m"
+Memory: "512Mi"
+MaxCpu: "200m"
+MaxMemory: "1024Mi"
+HeapRatio: 70
+Storage: "1Gi"
+DataDirectory: "/opt/kafka/data"
+TopicDeleteEnabled: true
+Component: "kafka"
+
+# zookeeper:
+#   Name: "zk"
+#   Component: "zk"
+AntiAffinity: "soft"
+DedicatedToleration: "kafka-zookeeper"

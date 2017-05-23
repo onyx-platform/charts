@@ -1,0 +1,190 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  ports:
+  - port: 9092
+  clusterIP: None
+  selector:
+    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    app: kafka
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  ports:
+  - port: 9092
+    name: broker
+  - name: metrics
+    protocol: TCP
+    port: 1234
+    targetPort: metrics
+  selector:
+    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    app: kafka
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
+  labels:
+    app: kafka
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  serviceName: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
+  replicas: {{ default 3 .Values.Replicas }}
+  template:
+    metadata:
+      labels:
+        app: kafka
+        role: kafka
+        component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      {{- if eq .Values.AntiAffinity "hard"}}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+            topologyKey: kubernetes.io/hostname
+      {{- else if eq .Values.AntiAffinity "soft"}}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: component
+                      operator: In
+                      values:
+                        - "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+                topologyKey: kubernetes.io/hostname
+      {{- end}}
+      tolerations:
+        - key: "dedicated"
+          value: "{{ .Values.DedicatedToleration }}"
+      containers:
+      - name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
+        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
+        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        livenessProbe:
+          exec:
+            command:
+              - bin/kafka-topics.sh
+              - --zookeeper
+              - "{{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181"
+              - --list
+          initialDelaySeconds: 300
+          timeoutSeconds: 60
+          failureThreshold: 5
+        readinessProbe:
+          exec:
+            command:
+              - bin/kafka-topics.sh
+              - --zookeeper
+              - "{{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181"
+              - --list
+          initialDelaySeconds: 30
+          failureThreshold: 5
+          timeoutSeconds: 60
+        ports:
+        - name: kafka
+          containerPort: 9092
+        - name: metrics
+          containerPort: 1234
+          protocol: TCP
+        env:
+          - name : JAVA_MAX_MEM_RATIO
+            value: "{{.Values.HeapRatio}}"
+        resources:
+          limits:
+            cpu: "{{ .Values.MaxCpu }}"
+            memory: "{{ .Values.MaxMemory }}"
+          requests:
+            cpu: "{{ .Values.Cpu }}"
+            memory: "{{ .Values.Memory }}"
+        command:
+        - sh
+        - -c
+        - "./kfRunServer.sh /etc/opt/kafka/server.properties --override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        volumeMounts:
+        - name: datadir
+          mountPath: "{{ .Values.DataDirectory }}"
+        - name: config
+          mountPath: /etc/opt/kafka
+        - name: kafka-jmx
+          mountPath: "/opt/config/prometheus"
+      volumes:
+        - name: config
+          configMap:
+            name: "{{ printf "cm-kf-%s" .Release.Name | trunc 24 }}"
+        - name: kafka-jmx
+          configMap:
+            name: kafka-jmx
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: anything
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{.Values.Storage}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-jmx
+data:
+  kafka.yaml: |+
+    rules:
+      - pattern : kafka.network<type=Processor, name=IdlePercent, networkProcessor=(.+)><>Value
+      - pattern : kafka.network<type=RequestMetrics, name=RequestsPerSec, request=(.+)><>OneMinuteRate
+      - pattern : kafka.network<type=SocketServer, name=NetworkProcessorAvgIdlePercent><>Value
+      - pattern : kafka.server<type=ReplicaFetcherManager, name=MaxLag, clientId=(.+)><>Value
+      - pattern : kafka.server<type=BrokerTopicMetrics, name=(.+), topic=(.+)><>OneMinuteRate
+      - pattern : kafka.server<type=KafkaRequestHandlerPool, name=RequestHandlerAvgIdlePercent><>OneMinuteRate
+      - pattern : kafka.server<type=Produce><>queue-size
+      - pattern : kafka.server<type=ReplicaManager, name=(.+)><>(Value|OneMinuteRate)
+      - pattern : kafka.server<type=controller-channel-metrics, broker-id=(.+)><>(.*)
+      - pattern : kafka.server<type=socket-server-metrics, networkProcessor=(.+)><>(.*)
+      - pattern : kafka.server<type=Fetch><>queue-size
+      - pattern : kafka.server<type=SessionExpireListener, name=(.+)><>OneMinuteRate
+      - pattern : kafka.controller<type=KafkaController, name=(.+)><>Value
+      - pattern : kafka.controller<type=ControllerStats, name=(.+)><>OneMinuteRate
+      - pattern : kafka.cluster<type=Partition, name=UnderReplicated, topic=(.+), partition=(.+)><>Value
+      - pattern : kafka.utils<type=Throttler, name=cleaner-io><>OneMinuteRate
+      - pattern : kafka.log<type=Log, name=LogEndOffset, topic=(.+), partition=(.+)><>Value
+      - pattern : java.lang<type=(.*)>"
