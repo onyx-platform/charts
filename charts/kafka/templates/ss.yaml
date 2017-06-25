@@ -105,7 +105,7 @@ spec:
         ports:
         - name: ebsmetrics
           containerPort: 4567
-        args: ["-p 3000", "-v datadir:/datadir"]
+        args: ["-p", "3000", "-v", "datadir:/datadir"]
         volumeMounts:
         - name: datadir
           mountPath: /datadir
