@@ -101,6 +101,7 @@ spec:
       containers:
       - name: ebs-metrics-sidecar
         image: gardnervickers/prometheus-ebs-metrics:latest
+        imagePullPolicy: Always
         ports:
         - name: ebsmetrics
           containerPort: 4567
