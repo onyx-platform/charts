@@ -38,6 +38,10 @@ spec:
     protocol: TCP
     port: 1234
     targetPort: metrics
+  - name: ebsmetrics
+    protocol: TCP
+    port: 4567
+    targetPort: ebsmetrics
   selector:
     component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
     app: kafka
@@ -95,6 +99,18 @@ spec:
         - key: "dedicated"
           value: "{{ .Values.DedicatedToleration }}"
       containers:
+      - name: ebs-metrics-sidecar
+        image: gardnervickers/prometheus-ebs-metrics:latest
+        ports:
+        - name: ebsmetrics
+          containerPort: 4567
+        args:
+          - -p 3000
+          - -v datadir:/datadir
+        volumeMounts:
+        - name: datadir
+          mountPath: /datadir
+          readOnly: true
       - name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
         imagePullPolicy: "{{.Values.ImagePullPolicy}}"
