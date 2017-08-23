@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ printf "datomic-%s" .Release.Name  | trunc 24 }}"
+  name: "{{ printf "%s-%s" .Chart.Name .Release.Name  | trunc 24 }}"
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        component: "{{ printf "%s-datomic" .Release.Name | trunc 24 }}"
+        component: "{{ printf "%s-%" .Release.Name .Chart.Name | trunc 24 }}"
     spec:
       imagePullSecrets:
         - name: pyroclast.io
@@ -44,7 +44,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: "{{ printf "cm-datomic-%s" .Release.Name | trunc 24 }}"
+            name: "{{ printf "cm-%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
         - name: data
           emptyDir: {}
 
@@ -52,17 +52,17 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ printf "cm-datomic-%s" .Release.Name | trunc 24 }}"
+  name: "{{ printf "cm-%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
 data:
   transactor.properties: |-
     protocol={{ .Values.Protocol }}
     host=0.0.0.0
     port=4334
-    alt-host={{ printf "datomic-%s" .Release.Name | trunc 24 }}
+    alt-host={{ printf "%s-%s" .Chart.Name. .Release.Name | trunc 24 }}
 
     license-key={{ .Values.LicenseKey }}
 
-    aws-dynamodb-table={{ printf "datomic.%s" .Release.Name  | trunc 24 }}
+    aws-dynamodb-table={{ printf "%s.%s" .Chart.Name. .Release.Name  | trunc 24 }}
 
     {{ if .Values.TableRegion }}
     aws-dynamodb-region={{ .Values.TableRegion }}
