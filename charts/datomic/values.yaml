@@ -13,3 +13,4 @@ Protocol: ddb
 TransactorRole: datomic-aws-transactor
 PeerRole: datomic-aws-peer
 Replicas: 1
+DynamoDBTable: ""

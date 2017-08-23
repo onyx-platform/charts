@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        component: "{{ printf "%s-%" .Release.Name .Chart.Name | trunc 24 }}"
+        component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
     spec:
       imagePullSecrets:
         - name: pyroclast.io
@@ -62,7 +62,7 @@ data:
 
     license-key={{ .Values.LicenseKey }}
 
-    aws-dynamodb-table={{ printf "%s.%s" .Chart.Name .Release.Name  | trunc 24 }}
+    aws-dynamodb-table={{ .Values.DynamoDBTable }}
 
     {{ if .Values.TableRegion }}
     aws-dynamodb-region={{ .Values.TableRegion }}
