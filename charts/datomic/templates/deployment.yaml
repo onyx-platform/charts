@@ -58,11 +58,11 @@ data:
     protocol={{ .Values.Protocol }}
     host=0.0.0.0
     port=4334
-    alt-host={{ printf "%s-%s" .Chart.Name. .Release.Name | trunc 24 }}
+    alt-host={{ printf "%s-%s" .Chart.Name .Release.Name | trunc 24 }}
 
     license-key={{ .Values.LicenseKey }}
 
-    aws-dynamodb-table={{ printf "%s.%s" .Chart.Name. .Release.Name  | trunc 24 }}
+    aws-dynamodb-table={{ printf "%s.%s" .Chart.Name .Release.Name  | trunc 24 }}
 
     {{ if .Values.TableRegion }}
     aws-dynamodb-region={{ .Values.TableRegion }}
