@@ -18,3 +18,6 @@ Component: "kafka"
 #   Component: "zk"
 AntiAffinity: "soft"
 DedicatedToleration: "kafka-zookeeper"
+DiskMonitorSidecar:
+  Image: gardnervickers/prometheus-ebs-metrics
+  ImageTag: latest

@@ -100,7 +100,7 @@ spec:
           value: "{{ .Values.DedicatedToleration }}"
       containers:
       - name: ebs-metrics-sidecar
-        image: gardnervickers/prometheus-ebs-metrics:latest
+        image: {{ .Values.DiskMonitorSidecar.Image }}:{{ .Values.DiskMonitorSidecar.ImageTag }}
         imagePullPolicy: Always
         ports:
         - name: ebsmetrics
