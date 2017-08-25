@@ -15,8 +15,6 @@ spec:
       labels:
         component: "{{ printf "%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
     spec:
-      imagePullSecrets:
-        - name: pyroclast.io
       containers:
       - name: datomic
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
