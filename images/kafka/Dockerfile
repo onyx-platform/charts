@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre
+FROM solsson/kafka-jre@sha256:7765513cf5fa455a672a06f584058c1c81cc0b3b56cc56b0cfdf1a917a183f26
 ## Attribution: https://github.com/solsson/dockerfiles/tree/master/kafka
 ENV KAFKA_VERSION=0.11.0.0 SCALA_VERSION=2.11
 
