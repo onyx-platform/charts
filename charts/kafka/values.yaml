@@ -12,7 +12,7 @@ Storage: "1Gi"
 DataDirectory: "/opt/kafka/data"
 TopicDeleteEnabled: true
 Component: "kafka"
-
+UncleanLeaderElection: false
 # zookeeper:
 #   Name: "zk"
 #   Component: "zk"

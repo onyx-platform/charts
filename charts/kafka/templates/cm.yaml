@@ -21,7 +21,7 @@ data:
     delete.topic.enable={{ .Values.TopicDeleteEnabled }}
 
     auto.create.topics.enable=false
-
+    unclean.leader.election.enable={{ .Values.UncleanLeaderElection }}
     ############################# Socket Server Settings #############################
 
     # The address the socket server listens on. It will get the value returned from
