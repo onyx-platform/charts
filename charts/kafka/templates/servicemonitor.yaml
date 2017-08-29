@@ -18,9 +18,9 @@ spec:
       - {{ .Release.Namespace }}
   endpoints:
   - port: metrics
-    interval: {{ .Values.ServiceMonitor.Interval | default 15s}}
+    interval: "{{ .Values.ServiceMonitor.Interval | default 15s}}"
     scheme: http
   - port: ebsmetrics
-    interval: {{ .Values.ServiceMonitor.Interval | default 15s}}
+    interval: "{{ .Values.ServiceMonitor.Interval | default 15s}}"
     scheme: http
 {{ end }}
