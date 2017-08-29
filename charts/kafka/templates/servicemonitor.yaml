@@ -4,6 +4,8 @@ kind: ServiceMonitor
 metadata:
   name: "{{ printf "%s-kafka-servicemonitor" .Release.Name }}"
   labels:
+    app: prometheus
+    prometheus: monitoring
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
@@ -18,9 +20,9 @@ spec:
       - {{ .Release.Namespace }}
   endpoints:
   - port: metrics
-    interval: "{{ .Values.ServiceMonitor.Interval | default 15s}}"
+    interval: "{{ .Values.ServiceMonitor.Interval }}"
     scheme: http
   - port: ebsmetrics
-    interval: "{{ .Values.ServiceMonitor.Interval | default 15s}}"
+    interval: "{{ .Values.ServiceMonitor.Interval }}"
     scheme: http
 {{ end }}
