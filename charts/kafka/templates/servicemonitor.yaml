@@ -1,0 +1,26 @@
+{{ if .Values.ServiceMonitor }}
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ServiceMonitor
+metadata:
+  name: "{{ printf "%s-kafka-servicemonitor" .Release.Name }}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+spec:
+  jobLabel: "{{ printf "%s-kafka" .Values.ServiceMonitor.JobLabelPrefix }}"
+  selector:
+    matchLabels:
+      component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+  - port: metrics
+    interval: {{ .Values.ServiceMonitor.Interval | default 15s}}
+    scheme: http
+  - port: ebsmetrics
+    interval: {{ .Values.ServiceMonitor.Interval | default 15s}}
+    scheme: http
+{{ end }}

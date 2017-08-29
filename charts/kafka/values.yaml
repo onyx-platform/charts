@@ -21,3 +21,8 @@ DedicatedToleration: "kafka-zookeeper"
 DiskMonitorSidecar:
   Image: gardnervickers/prometheus-ebs-metrics
   ImageTag: latest
+
+## Prometheus Service Monitor
+# ServiceMonitor:
+#   JobLabelPrefix: "kf"
+#   Interval: 15s
