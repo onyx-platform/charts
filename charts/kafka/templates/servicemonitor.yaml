@@ -10,7 +10,6 @@ metadata:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
 spec:
   jobLabel: "{{ printf "%s-kafka" .Values.ServiceMonitor.JobLabelPrefix }}"
   selector:

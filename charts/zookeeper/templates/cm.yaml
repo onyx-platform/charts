@@ -5,10 +5,12 @@ metadata:
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    role: zookeeper
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}"
 data:
   tick: "{{.Values.TickTimeMs}}"
   init: "{{.Values.InitTicks}}"

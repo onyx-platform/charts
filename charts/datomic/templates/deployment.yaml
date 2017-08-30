@@ -5,6 +5,9 @@ metadata:
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
+    role: datomic
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
@@ -13,7 +16,9 @@ spec:
   template:
     metadata:
       labels:
-        component: "{{ printf "%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
+        app: {{.Release.Name | quote }}
+        component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
+        role: datomic
     spec:
       containers:
       - name: datomic
@@ -51,6 +56,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: "{{ printf "cm-%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
+  labels:
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
+    role: datomic
 data:
   transactor.properties: |-
     protocol={{ .Values.Protocol }}

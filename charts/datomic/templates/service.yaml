@@ -4,9 +4,12 @@ metadata:
   name: "{{ printf "%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
+    role: datomic
 spec:
   selector:
-    component: "{{ printf "%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
   type: ClusterIP
   ports:
     -

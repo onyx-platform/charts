@@ -8,7 +8,9 @@ metadata:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}"
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    role: kafka
 data:
   server.properties: |
     ############################# Server Basics #############################

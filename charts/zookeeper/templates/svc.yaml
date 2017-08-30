@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
   labels:
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    role: zookeeper
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}"
 spec:
   ports:
   - port: {{.Values.ServerPort}}
@@ -15,4 +17,4 @@ spec:
     name: leader-election
   clusterIP: None
   selector:
-    component: "{{.Release.Name}}"
+    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"

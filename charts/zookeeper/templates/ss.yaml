@@ -5,18 +5,21 @@ metadata:
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    role: zookeeper
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}"
 spec:
   serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
   replicas: {{.Values.Servers}}
   template:
     metadata:
       labels:
+        app: {{.Release.Name | quote }}
+        component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
         role: zookeeper
-        component: "{{.Release.Name}}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
@@ -29,7 +32,7 @@ spec:
                 - key: component
                   operator: In
                   values:
-                    - "{{.Release.Name}}"
+                    - "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
             topologyKey: kubernetes.io/hostname
       {{- else if eq .Values.AntiAffinity "soft"}}
       affinity:
@@ -42,7 +45,7 @@ spec:
                     - key: component
                       operator: In
                       values:
-                        - "{{.Release.Name}}"
+                        - "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
                 topologyKey: kubernetes.io/hostname
       {{- end}}
       tolerations:
@@ -138,10 +141,12 @@ spec:
   - metadata:
       name: datadir
       labels:
+        app: {{.Release.Name | quote }}
+        component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+        role: zookeeper
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}"
       annotations:
         {{- if .Values.StorageClass}}
         volume.beta.kubernetes.io/storage-class: {{.Values.StorageClass | quote}}
