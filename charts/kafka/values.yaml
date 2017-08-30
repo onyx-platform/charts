@@ -26,3 +26,4 @@ DiskMonitorSidecar:
 # ServiceMonitor:
 #   JobLabelPrefix: "kf"
 #   Interval: 15s
+#   Namespace: <defaults to monitoring>
