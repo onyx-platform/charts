@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1alpha1
 kind: ServiceMonitor
 metadata:
   name: "{{ printf "%s-kafka-servicemonitor" .Release.Name }}"
-  namespace: "{{ .Values.ServiceMonitor.Namespace | default monitoring }}"
+  namespace: {{ .Values.ServiceMonitor.Namespace | default "monitoring" }}
   labels:
     app: prometheus
     prometheus: monitoring
