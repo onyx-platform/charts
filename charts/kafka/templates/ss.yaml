@@ -28,10 +28,10 @@ metadata:
   labels:
     app: {{.Release.Name | quote }}
     component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    role: kafka
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    role: kafka
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
