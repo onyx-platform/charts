@@ -75,6 +75,10 @@ data:
     aws-dynamodb-region={{ .Values.TableRegion }}
     {{ end }}
 
+    {{ if .Values.Memcached }}
+    memcached={{ .Values.Memcached }}
+    {{ end }}
+
     {{ if .Values.OverrideEndpoint }}
     aws-dynamodb-override-endpoint={{ .Values.OverrideEndpoint }}
     {{ end }}
