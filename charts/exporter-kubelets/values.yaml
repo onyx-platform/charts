@@ -1,2 +1,5 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+K8SNodeDown: true
+K8SKubeletDown: true
+K8SKubeletTooManyPods: true

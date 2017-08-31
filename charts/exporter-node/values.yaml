@@ -15,4 +15,7 @@ resources:
   requests:
     cpu: 100m
     memory: 30Mi
-
+K8SKubeletNodeExporterDown: true
+K8SConntrackTableFull: true
+K8SConntrackTableFull: true
+K8SConntrackTuningMissing: true

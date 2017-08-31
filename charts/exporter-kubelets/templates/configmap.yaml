@@ -132,7 +132,7 @@ data:
       ) / sum by (cluster) (
         container_spec_cpu_shares{id="/"} * on(cluster,instance) machine_cpu_cores
       )
-
+    {{- if .Values.K8SNodeDown }}
     ALERT K8SNodeDown
       IF up{job="kubelet"} == 0
       FOR 1h
@@ -144,7 +144,8 @@ data:
         summary = "Kubelet cannot be scraped",
         description = "Prometheus could not scrape a {{`{{ $labels.job }}`}} for more than one hour",
       }
-
+    {{- end }}
+    {{- if .Values.K8SKubeletDown }}
     ALERT K8SKubeletDown
       IF absent(up{job="kubelet"}) or count by (cluster) (up{job="kubelet"} == 0) / count by (cluster) (up{job="kubelet"}) > 0.1
       FOR 1h
@@ -156,10 +157,10 @@ data:
         summary = "Many Kubelets cannot be scraped",
         description = "Prometheus failed to scrape more than 10% of kubelets, or all Kubelets have disappeared from service discovery.",
       }
-
+    {{- end }}
+    {{- if .Values.K8SKubeletTooManyPods }}
     # Some verbs excluded because they are expected to be long-lasting:
     # WATCHLIST is long-poll, CONNECT is `kubectl exec`.
-
     ALERT K8SKubeletTooManyPods
       IF kubelet_running_pod_count > 100
       LABELS {
@@ -170,3 +171,4 @@ data:
         summary = "Kubelet is close to pod limit",
         description = "Kubelet {{`{{$labels.instance}}`}} is running {{`{{$value}}`}} pods, close to the limit of 110",
       }
+    {{- end }}

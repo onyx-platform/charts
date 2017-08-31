@@ -35,6 +35,7 @@ data:
     cluster:scheduler_binding_latency:quantile_seconds{quantile="0.5"} =
       histogram_quantile(0.5,sum by (le,cluster) (scheduler_binding_latency_microseconds_bucket)) / 1e6
 
+    {{- if .Values.K8SSchedulerDown }}
     ALERT K8SSchedulerDown
       IF absent(up{job="{{ template "fullname" . }}"}) or (count by(cluster) (up{job="{{ template "fullname" . }}"} == 1) == 0)
       FOR 5m
@@ -46,3 +47,4 @@ data:
         summary = "Scheduler is down",
         description = "There is no running K8S scheduler. New pods are not being assigned to nodes.",
       }
+    {{- end }}
