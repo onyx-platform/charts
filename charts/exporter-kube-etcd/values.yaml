@@ -1,2 +1,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+InsufficientPeers: true
+HighNumberOfFailedHTTPRequests: true
+HighNumberOfFailedHTTPRequests: true
+HTTPRequestsSlow: true
+K8SApiServerEtcdAccessLatency: true
+HighNumberOfFailedProposals: true
+HighFsyncDurations: true
