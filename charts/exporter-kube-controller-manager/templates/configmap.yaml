@@ -11,7 +11,7 @@ metadata:
 data:
   kube-controller-manager.rules: |-
     # NOTE: These rules were kindly contributed by the SoundCloud engineering team.
-
+    {{- if .Values.K8SControllerManagerDown }}
     ALERT K8SControllerManagerDown
       IF absent(up{job="{{ template "fullname" . }}"}) or (count by(cluster) (up{job="{{ template "fullname" . }}"} == 1) == 0)
       FOR 5m
@@ -23,3 +23,4 @@ data:
         summary = "Controller manager is down",
         description = "There is no running K8S controller manager. Deployments and replication controllers are not making progress.",
       }
+    {{- end }}
