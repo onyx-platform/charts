@@ -11,12 +11,12 @@ metadata:
 data:
   kube-api.rules: |-
     # NOTE: These rules were kindly contributed by the SoundCloud engineering team.
-
+    {{- if .Values.K8SApiServerLatency }}
     ALERT K8SApiServerLatency
       IF histogram_quantile(
           0.99,
           sum without (instance,node,resource) (apiserver_request_latencies_bucket{verb!~"CONNECT|WATCHLIST|WATCH"})
-        ) / 1e6 > 1.0
+        ) / 1e6 > {{ .Values.K8SApiServerLatency }}
       FOR 10m
       LABELS {
         service = "k8s",
@@ -26,6 +26,7 @@ data:
         summary = "Kubernetes apiserver latency is high",
         description = "99th percentile Latency for {{`{{ $labels.verb }}`}} requests to the kube-apiserver is higher than 1s.",
       }
+    {{- end }}
 
     ### API latency ###
 
@@ -49,7 +50,7 @@ data:
     ### File descriptor alerts
 
     instance:fd_utilization = process_open_fds / process_max_fds
-
+    {{- if .Values.FdExhaustionClose }}
     # alert if file descriptors are likely to exhaust within the next 4 hours
     ALERT FdExhaustionClose
       IF predict_linear(instance:fd_utilization[1h], 3600 * 4) > 1
@@ -62,7 +63,8 @@ data:
         summary = "file descriptors soon exhausted",
         description = "{{`{{ $labels.job }}`}} instance {{`{{ $labels.instance }}`}} will exhaust in file descriptors soon",
       }
-
+    {{- end }}
+    {{- if .Values.FdExhaustionClose }}
     # alert if file descriptors are likely to exhaust within the next hour
     ALERT FdExhaustionClose
       IF predict_linear(instance:fd_utilization[10m], 3600) > 1
@@ -75,7 +77,8 @@ data:
         summary = "file descriptors soon exhausted",
         description = "{{`{{ $labels.job }}`}} instance {{`{{ $labels.instance }}`}} will exhaust in file descriptors soon",
       }
-
+    {{- end }}
+    {{- if .Values.K8STooManyOpenFiles }}
     ALERT K8STooManyOpenFiles
       IF 100*process_open_fds{job=~"kubelets|kubernetes"} / process_max_fds > 50
       FOR 10m
@@ -87,7 +90,8 @@ data:
         summary = "{{`{{ $labels.job }}`}} has too many open file descriptors",
         description = "{{`{{ $labels.node }}`}} is using {{`{{ $value }}`}}% of the available file/socket descriptors.",
       }
-
+    {{- end }}
+    {{- if .Values.K8STooManyOpenFiles }}
     ALERT K8STooManyOpenFiles
       IF 100*process_open_fds{job=~"kubelets|kubernetes"} / process_max_fds > 80
       FOR 10m
@@ -99,4 +103,4 @@ data:
         summary = "{{`{{ $labels.job }}`}} has too many open file descriptors",
         description = "{{`{{ $labels.node }}`}} is using {{`{{ $value }}`}}% of the available file/socket descriptors.",
       }
-
+    {{- end }}

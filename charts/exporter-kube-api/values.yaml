@@ -1,2 +1,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+K8SApiServerLatency: 1.0
+FdExhaustionClose: true
+FdExhaustionClose: true
+K8STooManyOpenFiles: true
+K8STooManyOpenFiles: true
