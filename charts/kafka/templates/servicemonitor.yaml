@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Values.ServiceMonitor.Namespace | default "monitoring" }}
   labels:
     app: prometheus
-    prometheus: monitoring
+    prometheus: "{{ .Release.Name }}"
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
