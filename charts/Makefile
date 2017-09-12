@@ -15,6 +15,7 @@ makepath:
 	@mkdir -p pyroclast
 
 copy:
+	@aws s3 sync s3://charts.pyroclast.io pyroclast
 	@mv *.tgz pyroclast/
 
 index:
