@@ -1,0 +1,5 @@
+dependencies:
+  - name: memcached
+    version: 1.2.1
+    repository: https://s3.amazonaws.com/charts.pyroclast.io
+    condition: memcached.install

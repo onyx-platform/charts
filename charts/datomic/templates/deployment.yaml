@@ -85,19 +85,7 @@ data:
     object-cache-max=128m
     pid-file=/transactor.pid
 
-    ####################
-    # protocol=ddb-local
-    # host=0.0.0.0
-    # port=4334
-    # alt-host=datomic
-
-    # #aws-dynamodb-region=cn-north-1
-    # aws-dynamodb-override-endpoint=dynamodb.cn-north-1.amazonaws.com.cn
-    # memory-index-threshold=32m
-    # memory-index-max=256m
-    # object-cache-max=128m
-    # pid-file=/transactor.pid
-
-    # aws-dynamodb-table=china.datomic
-    # aws-transactor-role=K8sDatomicTransactor
-    # aws-peer-role=K8sDatomicPeer
+    # Memcached configuration.
+    {{ if .Values.memcached. }}
+    memcached="{{ printf "%s-%s" .Values.memcached.ServicePrefix .Release.Name | trunc 63 }}":11211
+    {{ end }}

@@ -1,0 +1,76 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-memcached" .Release.Name | trunc 24 }}"
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    role: memcached
+spec:
+  serviceName: "{{ printf "memcached-%s" .Release.Name | trunc 63 }}"
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{.Release.Name | quote }}
+        component: "{{ printf "%s-memcached" .Release.Name | trunc 24 }}"
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        role: memcached
+    spec:
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.AntiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - "{{ printf "%s-memcached" .Release.Name | trunc 24 }}"
+        {{- else if eq .Values.AntiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 5
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: component
+                      operator: In
+                      values:
+                        - "{{ printf "%s-memcached" .Release.Name | trunc 24 }}"
+                topologyKey: kubernetes.io/hostname
+        {{- end }}
+      containers:
+      - name: "{{ printf "memcached-%s" .Release.Name | trunc 63 }}"
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        command:
+        - memcached
+        - -m {{ .Values.memcached.maxItemMemory  }}
+        {{- if .Values.memcached.extendedOptions }}
+        - -o
+        - {{ .Values.memcached.extendedOptions }}
+        {{- end }}
+        {{- if .Values.memcached.verbosity }}
+        - -{{ .Values.memcached.verbosity }}
+        {{- end }}
+        ports:
+        - name: memcache
+          containerPort: 11211
+        livenessProbe:
+          tcpSocket:
+            port: memcache
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: memcache
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.resources | indent 10 }}

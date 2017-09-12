@@ -1,0 +1,20 @@
+{{ if .Values.pdbMinAvailable }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ printf "%s-%s" .Values.ServicePrefix .Release.Name | trunc 63 }}"
+  labels:
+    app: {{.Release.Name | quote }}
+    component: "{{ printf "%s-memcached" .Release.Name | trunc 24 }}"
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    role: memcached
+spec:
+  selector:
+    matchLabels:
+      app: {{.Release.Name | quote }}
+      component: "{{ printf "%s-memcached" .Release.Name | trunc 24 }}"
+  minAvailable: {{ .Values.pdbMinAvailable }}
+
+{{ end }}
