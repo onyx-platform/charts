@@ -87,5 +87,5 @@ data:
 
     # Memcached configuration.
     {{ if .Values.memcached.ServicePrefix }}
-    memcached="{{ printf "%s-%s:11211" .Values.memcached.ServicePrefix .Release.Name | trunc 63 }}"
+    memcached={{ printf "%s-%s:11211" .Values.memcached.ServicePrefix .Release.Name | trunc 63 }}
     {{ end }}
