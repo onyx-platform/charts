@@ -1,6 +1,0 @@
-dependencies:
-- name: memcached
-  repository: https://s3.amazonaws.com/charts.pyroclast.io
-  version: 1.2.1
-digest: sha256:1c926b6f54f1ea19f44338c9139b28a55af041d69ae90d145fb794c59f6c98b7
-generated: 2017-09-13T08:56:09.643241991-04:00

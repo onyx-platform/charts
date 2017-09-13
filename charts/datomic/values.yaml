@@ -14,12 +14,4 @@ TransactorRole: datomic-aws-transactor
 PeerRole: datomic-aws-peer
 Replicas: 1
 DynamoDBTable: ""
-
-memcached:
-  install: false
-  ServicePrefix: memcached-cluster ## "{{ printf "memcached-cluster-%s" .Release.Name | trunc 63 }}"
-  resources:
-    requests:
-      memory: 64Mi
-      cpu: 50m
-  replicaCount: 3
+#MemcachedServers: memcached-cluster-0:112211,memcached-cluster-1:112211
