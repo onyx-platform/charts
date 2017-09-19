@@ -13,6 +13,8 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
   serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
+  updateStrategy:
+    type: RollingUpdate
   replicas: {{.Values.Servers}}
   template:
     metadata:

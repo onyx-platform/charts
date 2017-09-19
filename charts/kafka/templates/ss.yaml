@@ -65,6 +65,8 @@ metadata:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-broker-%s" .Values.Name .Release.Name | trunc 63 }}"
+  updateStrategy:
+    type: RollingUpdate
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
