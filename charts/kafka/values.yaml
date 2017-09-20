@@ -13,9 +13,8 @@ DataDirectory: "/opt/kafka/data"
 TopicDeleteEnabled: true
 Component: "kafka"
 UncleanLeaderElection: false
-# zookeeper:
-#   Name: "zk"
-#   Component: "zk"
+AutoCreateTopicsEnable: false
+LogRetentionCheckIntervalMs: 15000
 AntiAffinity: "soft"
 DedicatedToleration: "kafka-zookeeper"
 DiskMonitorSidecar:
