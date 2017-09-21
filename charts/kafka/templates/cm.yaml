@@ -31,7 +31,7 @@ data:
     transaction.state.log.min.isr=1
     log.retention.hours=168
     log.segment.bytes=1073741824
-    log.retention.check.interval.ms="{{ .Values.LogRetentionCheckIntervalMs }}"
+    log.retention.check.interval.ms={{ .Values.LogRetentionCheckIntervalMs }}
     group.initial.rebalance.delay.ms=0
     zookeeper.connect=zookeeper:2181
     zookeeper.connection.timeout.ms=6000
