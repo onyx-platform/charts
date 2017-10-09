@@ -20,6 +20,6 @@ data:
       }
       ANNOTATIONS {
         summary = "Pod is in a restart loop",
-        description = "Pod {{ $labels.namespace }}/{{ $labels.exported_pod }} is restarting constantly",
+        description = "Pod {{ `{{ $labels.namespace }}` }}/{{ `{{ $labels.exported_pod }}` }} is restarting constantly",
       }
     {{ end }}
