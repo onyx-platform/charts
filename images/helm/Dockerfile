@@ -17,5 +17,6 @@ FROM alpine:3.6
 COPY --from=build /tmp/linux-amd64/helm /bin/helm
 RUN apk add --no-cache ca-certificates
 RUN apk add --no-cache git
+RUN apk add --no-cache openssh
 
 ENTRYPOINT ["/bin/helm"]
