@@ -58,12 +58,7 @@ spec:
         imagePullPolicy: {{.Values.ImagePullPolicy}}
         image: {{ .Values.Image}}:{{ .Values.Tag }}
         resources:
-          requests:
-            memory: {{.Values.Memory}}
-            cpu: {{.Values.Cpu}}
-          limits:
-            memory: {{.Values.Memory}}
-            cpu: {{.Values.Cpu}}
+{{ toYaml .Values.resources | indent 12 }}
         ports:
         - containerPort: {{.Values.ClientPort}}
           name: client
@@ -72,8 +67,6 @@ spec:
         - containerPort: {{.Values.LeaderElectionPort}}
           name: leader-election
         env:
-        - name : JAVA_MAX_MEM_RATIO
-          value: "{{.Values.HeapRatio}}"
         - name : ZK_REPLICAS
           value: "{{.Values.Servers}}"
         - name : ZK_TICK_TIME
@@ -117,6 +110,8 @@ spec:
           value: "{{.Values.ServerPort}}"
         - name: ZK_ELECTION_PORT
           value: "{{.Values.LeaderElectionPort}}"
+        - name: SERVER_JVMFLAGS
+          value: "-server -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
         command:
         - sh
         - -c

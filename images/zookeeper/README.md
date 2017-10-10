@@ -1,9 +1,5 @@
 # This image was taken from the Kubernetes Zookeeper image, and modified
-to dynamically calculate Zookeeper NIO thread pooling and heap memory based
-on cgroup limits. A heap ratio can be set with `JAVA_MAX_MEM_RATIO` instead of
-manually setting the heap size, and thread pool settings attempt to mirror ZK
-defaults but with respect to cgroup core limits instead of host machine core
-limits.
+with a base image allowing for use with cgroup limits.
 
 # Kubernetes ZooKeeper K8SZK
 This project contains a Docker image meant to facilitate the deployment of
