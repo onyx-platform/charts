@@ -15,6 +15,7 @@ spec:
   serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
   updateStrategy:
     type: RollingUpdate
+  podManagementPolicy: Parallel
   replicas: {{.Values.Servers}}
   template:
     metadata:
