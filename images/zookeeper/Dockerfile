@@ -39,6 +39,12 @@ COPY zkGenConfig.sh zkOk.sh zkMetrics.sh /opt/zookeeper/bin/
 
 # Create a user for the zookeeper process and configure file system ownership
 # for nessecary directories and symlink the distribution as a user executable
+FROM onyxplatform/pyroclast-base:2
+COPY --from=0 /opt/zookeeper /opt/zookeeper
+ENV ZK_USER=zookeeper \
+    ZK_DATA_DIR=/var/lib/zookeeper/data \
+    ZK_DATA_LOG_DIR=/var/lib/zookeeper/log
+RUN yum install -y nc hostname
 RUN set -x \
 	&& useradd $ZK_USER \
     && [ `id -u $ZK_USER` -eq 1000 ] \
