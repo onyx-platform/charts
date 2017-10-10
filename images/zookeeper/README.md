@@ -148,14 +148,6 @@ automatic data purge policies.
 |ZK_SNAP_RETAIN_COUNT|integer|3|The number of snapshots that the ZooKeeper process will retain if ZK_PURGE_INTERVAL is set to a value greater than 0.|
 |ZK_PURGE_INTERVAL|integer|0|The delay, in hours, between ZooKeeper log and snapshot cleanups.|
 
-####JVM Configuration
-Currently the only supported JVM configuration is the JVM heap size. Be sure that the heap size you
-request does not cause the process to swap out.
-
-|Variable|Type|Default|Description|
-|:------:|:---:|:-----:|:--------|
-|ZK_HEAP_SIZE|integer|2|The JVM heap size in Gibibytes.|
-
 ####Log Level Configuration
 |Variable|Type|Default|Description|
 |:------:|:---:|:-----:|:--------|
