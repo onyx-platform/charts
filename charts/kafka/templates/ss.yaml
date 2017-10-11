@@ -148,8 +148,8 @@ spec:
           containerPort: 1234
           protocol: TCP
         env:
-          - name : JAVA_MAX_MEM_RATIO
-            value: "{{.Values.HeapRatio}}"
+          - name : KAFKA_HEAP_OPTS
+            value: "-javaagent:jmx_prometheus_javaagent.jar=1234:/opt/config/prometheus/kafka.yaml -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         command:
