@@ -18,6 +18,7 @@ spec:
   clusterIP: None
   selector:
     component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    role: zookeeper
 ---
 apiVersion: v1
 kind: Service
@@ -36,3 +37,4 @@ spec:
     name: client
   selector:
     component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    role: zookeeper
