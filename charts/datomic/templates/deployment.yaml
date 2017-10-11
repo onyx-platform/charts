@@ -1,12 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ printf "%s-%s" .Chart.Name .Release.Name  | trunc 24 }}"
+  name: "{{ printf "%s-%s" .Chart.Name .Release.Name  }}"
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
+    component: "{{ printf "%s-%s" .Release.Name .Chart.Name }}"
     role: datomic
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app: {{.Release.Name | quote }}
-        component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
+        component: "{{ printf "%s-%s" .Release.Name .Chart.Name }}"
         role: datomic
     spec:
       containers:
@@ -47,7 +47,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: "{{ printf "cm-%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
+            name: "{{ printf "cm-%s-%s" .Chart.Name .Release.Name }}"
         - name: data
           emptyDir: {}
 
@@ -55,17 +55,17 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ printf "cm-%s-%s" .Chart.Name .Release.Name | trunc 24 }}"
+  name: "{{ printf "cm-%s-%s" .Chart.Name .Release.Name }}"
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-%s" .Release.Name .Chart.Name | trunc 24 }}"
+    component: "{{ printf "%s-%s" .Release.Name .Chart.Name }}"
     role: datomic
 data:
   transactor.properties: |-
     protocol={{ .Values.Protocol }}
     host=0.0.0.0
     port=4334
-    alt-host={{ printf "%s-%s" .Chart.Name .Release.Name | trunc 24 }}
+    alt-host={{ printf "%s-%s" .Chart.Name .Release.Name | trunc 63 }}
 
     license-key={{ .Values.LicenseKey }}
 
