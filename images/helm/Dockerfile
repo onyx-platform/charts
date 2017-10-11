@@ -3,10 +3,8 @@ MAINTAINER Gardner Vickers <gardner@vickers.me>
 
 RUN apk add --update --no-cache ca-certificates git
 
-ENV VERSION v2.6.1
+ARG VERSION=v2.6.1
 ENV FILENAME helm-${VERSION}-linux-amd64.tar.gz
-
-WORKDIR /
 
 RUN apk add --update -t deps curl tar gzip
 RUN curl -L http://storage.googleapis.com/kubernetes-helm/${FILENAME} | tar zxv -C /tmp
@@ -15,8 +13,9 @@ RUN curl -L http://storage.googleapis.com/kubernetes-helm/${FILENAME} | tar zxv 
 FROM alpine:3.6
 
 COPY --from=build /tmp/linux-amd64/helm /bin/helm
-RUN apk add --no-cache ca-certificates
-RUN apk add --no-cache git
-RUN apk add --no-cache openssh
+RUN apk add --no-cache ca-certificates git openssh bash curl
+RUN helm init --client-only
+RUN helm plugin install https://github.com/databus23/helm-diff
+RUN helm plugin install https://github.com/gardnervickers/helm-bump
 
 ENTRYPOINT ["/bin/helm"]

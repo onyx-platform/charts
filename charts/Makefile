@@ -2,8 +2,8 @@ CHARTS := $(shell find . -path '*/Chart.yaml' | tr '\n' ' ' | sed -E 's:\./|/Cha
 DEP_CHARTS := $(shell find . -path '*/requirements.yaml' | tr '\n' ' ' |  sed -E 's:\./|/requirements\.yaml::g')
 
 .PHONY: clean all package makepath copy index sync acl dependency-update
-all: package makepath copy index sync clean
-
+all: bump-changed package makepath copy index sync clean
+prepare: bump-changed
 dependency-update:
 	helm init -c
 	helm repo add pyroclast https://s3.amazonaws.com/charts.pyroclast.io
@@ -26,3 +26,6 @@ sync:
 
 clean:
 	@rm -rf pyroclast
+
+bump-changed: dependency-update
+	./bump-changed.sh
