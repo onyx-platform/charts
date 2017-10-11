@@ -67,6 +67,7 @@ spec:
   serviceName: "{{ printf "%s-broker-%s" .Values.Name .Release.Name | trunc 63 }}"
   updateStrategy:
     type: RollingUpdate
+  podManagementPolicy: Parallel
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
@@ -150,16 +151,11 @@ spec:
           - name : JAVA_MAX_MEM_RATIO
             value: "{{.Values.HeapRatio}}"
         resources:
-          limits:
-            cpu: "{{ .Values.MaxCpu }}"
-            memory: "{{ .Values.MaxMemory }}"
-          requests:
-            cpu: "{{ .Values.Cpu }}"
-            memory: "{{ .Values.Memory }}"
+{{ toYaml .Values.resources | indent 12 }}
         command:
         - sh
         - -c
-        - "./kfRunServer.sh /etc/opt/kafka/server.properties --override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh /etc/opt/kafka/server.properties --override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"

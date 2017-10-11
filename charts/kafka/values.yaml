@@ -1,13 +1,15 @@
 Name: "kf"
 Replicas: 3
 Image: "onyxplatform/kafka"
-ImageTag: "6"
+ImageTag: 10
 ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "512Mi"
-MaxCpu: "200m"
-MaxMemory: "1024Mi"
-HeapRatio: 70
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 100m
+  limits:
+    memory: 1024Mi
+    cpu: 200m
 Storage: "1Gi"
 DataDirectory: "/opt/kafka/data"
 TopicDeleteEnabled: true

@@ -8,7 +8,7 @@ ENV ZK_USER=zookeeper \
 
 ARG ZK_DIST=zookeeper-3.4.9999
 
-RUN set -x && yum install -y wget netcat tar gzip hostname nc
+RUN set -x && yum install -y wget tar gzip hostname nc
 RUN set -x && wget -q "$SNAPSHOT_BUILD" \
     && tar -xzf "$ZK_DIST.tar.gz" -C /opt \
     && ln -s /opt/$ZK_DIST /opt/zookeeper \
