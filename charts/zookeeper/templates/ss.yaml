@@ -1,18 +1,18 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+  name: "{{ printf "zk-%s" .Release.Name }}"
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-zk" .Release.Name }}"
     role: zookeeper
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
-  serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
+  serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 63}}"
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
@@ -21,7 +21,7 @@ spec:
     metadata:
       labels:
         app: {{.Release.Name | quote }}
-        component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+        component: "{{ printf "%s-zk" .Release.Name }}"
         role: zookeeper
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
@@ -35,7 +35,7 @@ spec:
                 - key: component
                   operator: In
                   values:
-                    - "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+                    - "{{ printf "%s-zk" .Release.Name }}"
             topologyKey: kubernetes.io/hostname
       {{- else if eq .Values.AntiAffinity "soft"}}
       affinity:
@@ -48,7 +48,7 @@ spec:
                     - key: component
                       operator: In
                       values:
-                        - "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+                        - "{{ printf "%s-zk" .Release.Name }}"
                 topologyKey: kubernetes.io/hostname
       {{- end}}
       tolerations:
@@ -73,37 +73,37 @@ spec:
         - name : ZK_TICK_TIME
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name }}"
                 key: tick
         - name : ZK_INIT_LIMIT
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name }}"
                 key: init
         - name : ZK_SYNC_LIMIT
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name }}"
                 key: tick
         - name : ZK_MAX_CLIENT_CNXNS
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name }}"
                 key: client.cnxns
         - name: ZK_SNAP_RETAIN_COUNT
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name }}"
                 key: snap.retain
         - name: ZK_PURGE_INTERVAL
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name }}"
                 key: purge.interval
         - name: ZK_LOG_LEVEL
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name }}"
                 key: log.level
         - name: ZK_CLIENT_PORT
           value: "{{.Values.ClientPort}}"
@@ -140,7 +140,7 @@ spec:
       name: datadir
       labels:
         app: {{.Release.Name | quote }}
-        component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+        component: "{{ printf "%s-zk" .Release.Name }}"
         role: zookeeper
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}

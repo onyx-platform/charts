@@ -5,7 +5,7 @@ metadata:
   name: "{{ printf "%s-broker-%s" .Values.Name .Release.Name | trunc 63 }}"
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-kafka" .Release.Name }}"
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
@@ -18,7 +18,7 @@ spec:
   - port: 9092
   clusterIP: None
   selector:
-    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-kafka" .Release.Name }}"
     app: {{.Release.Name | quote }}
 ---
 apiVersion: v1
@@ -27,7 +27,7 @@ metadata:
   name: "{{ printf "%s-%s" .Values.Name .Release.Name | trunc 63 }}"
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-kafka" .Release.Name }}"
     role: kafka
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -47,7 +47,7 @@ spec:
     port: 4567
     targetPort: ebsmetrics
   selector:
-    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-kafka" .Release.Name }}"
     app: {{.Release.Name | quote }}
 ---
 apiVersion: apps/v1beta1
@@ -56,7 +56,7 @@ metadata:
   name: "{{ printf "%s-%s" .Values.Name .Release.Name | trunc 63 }}"
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-kafka" .Release.Name }}"
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
@@ -74,7 +74,7 @@ spec:
       labels:
         app: {{.Release.Name | quote }}
         role: kafka
-        component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+        component: "{{ printf "%s-kafka" .Release.Name }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
@@ -87,7 +87,7 @@ spec:
                 - key: component
                   operator: In
                   values:
-                    - "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+                    - "{{ printf "%s-kafka" .Release.Name }}"
             topologyKey: kubernetes.io/hostname
       {{- else if eq .Values.AntiAffinity "soft"}}
       affinity:
@@ -100,7 +100,7 @@ spec:
                     - key: component
                       operator: In
                       values:
-                        - "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+                        - "{{ printf "%s-kafka" .Release.Name }}"
                 topologyKey: kubernetes.io/hostname
       {{- end}}
       tolerations:
@@ -126,7 +126,11 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
+              {{ if .Values.zookeeper.hostname -}}
+              - "{{ .Values.zookeeper.hostname }}:2181"
+              {{- else -}}
               - "{{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181"
+              {{- end }}
               - --list
           initialDelaySeconds: 300
           timeoutSeconds: 60
@@ -136,7 +140,11 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
+              {{ if .Values.zookeeper.hostname -}}
+              - "{{ .Values.zookeeper.hostname }}:2181"
+              {{- else -}}
               - "{{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181"
+              {{- end }}
               - --list
           initialDelaySeconds: 30
           failureThreshold: 5
@@ -155,7 +163,12 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh /etc/opt/kafka/server.properties --override zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        - >
+          ./bin/kafka-server-start.sh /etc/opt/kafka/server.properties
+          --override
+          zookeeper.connect={{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181/
+          --override
+          broker.id=${HOSTNAME##*-}
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"
@@ -166,16 +179,16 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: "{{ printf "cm-kf-%s" .Release.Name | trunc 24 }}"
+            name: "{{ printf "cm-kf-%s" .Release.Name }}"
         - name: kafka-jmx
           configMap:
-            name: kafka-jmx
+            name: "{{ printf "cm-kf-jmx-%s" .Release.Name }}"
   volumeClaimTemplates:
   - metadata:
       name: datadir
       labels:
         app: {{.Release.Name | quote }}
-        component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+        component: "{{ printf "%s-kafka" .Release.Name }}"
         role: kafka
       annotations:
         volume.alpha.kubernetes.io/storage-class: {{ .Values.StorageClass }}
@@ -188,10 +201,10 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kafka-jmx
+  name: "{{ printf "cm-kf-jmx-%s" .Release.Name }}"
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-kafka" .Release.Name }}"
     role: kafka
 data:
   kafka.yaml: |+

@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
+  name: "{{ printf "hs-zk-%s" .Release.Name | trunc 63 }}"
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-zk" .Release.Name }}"
     role: zookeeper
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -17,16 +17,16 @@ spec:
     name: leader-election
   clusterIP: None
   selector:
-    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-zk" .Release.Name }}"
     role: zookeeper
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ printf "zk-%s" .Release.Name | trunc 24 }}"
+  name: "{{ printf "zk-%s" .Release.Name | trunc 63 }}"
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-zk" .Release.Name }}"
     role: zookeeper
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -36,5 +36,5 @@ spec:
   - port: {{.Values.ClientPort}}
     name: client
   selector:
-    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-zk" .Release.Name }}"
     role: zookeeper

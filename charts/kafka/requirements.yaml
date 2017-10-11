@@ -1,0 +1,5 @@
+dependencies:
+  - name: zookeeper
+    version: 0.2.1
+    repository: https://s3.amazonaws.com/charts.pyroclast.io
+    condition: zookeeper.provide

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ printf "cm-kf-%s" .Release.Name | trunc 24 }}"
+  name: "{{ printf "cm-kf-%s" .Release.Name }}"
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
@@ -9,7 +9,7 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-kafka" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-kafka" .Release.Name }}"
     role: kafka
 data:
   server.properties: |
@@ -19,7 +19,7 @@ data:
     unclean.leader.election.enable={{ .Values.UncleanLeaderElection }}
 
     num.network.threads=3
-    num.io.threads=8
+    num.io.threads=2
     socket.send.buffer.bytes=102400
     socket.receive.buffer.bytes=102400
     socket.request.max.bytes=104857600

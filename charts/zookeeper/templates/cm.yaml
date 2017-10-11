@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+  name: "{{ printf "cm-zk-%s" .Release.Name }}"
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
     app: {{.Release.Name | quote }}
-    component: "{{ printf "%s-zk" .Release.Name | trunc 24 }}"
+    component: "{{ printf "%s-zk" .Release.Name }}"
     role: zookeeper
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}

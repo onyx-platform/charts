@@ -1,7 +1,7 @@
 CHARTS := $(shell find . -path '*/Chart.yaml' | tr '\n' ' ' | sed -E 's:\./|/Chart\.yaml::g')
 DEP_CHARTS := $(shell find . -path '*/requirements.yaml' | tr '\n' ' ' |  sed -E 's:\./|/requirements\.yaml::g')
 
-.PHONY: clean all package makepath copy index sync acl dependency-update
+.PHONY: clean all package makepath copy index sync dependency-update
 all: bump-changed package makepath copy index sync clean
 prepare: bump-changed
 dependency-update:
