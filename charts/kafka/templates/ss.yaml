@@ -124,28 +124,22 @@ spec:
         livenessProbe:
           exec:
             command:
-              - bin/kafka-topics.sh
-              - --zookeeper
-              {{ if .Values.zookeeper.hostname -}}
-              - "{{ .Values.zookeeper.hostname }}:2181"
-              {{- else -}}
-              - "{{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181"
-              {{- end }}
-              - --list
+              - sh
+              - -c
+              - >
+                unset KAFKA_HEAP_OPTS &&
+                /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:9092
           initialDelaySeconds: 300
           timeoutSeconds: 60
           failureThreshold: 5
         readinessProbe:
           exec:
             command:
-              - bin/kafka-topics.sh
-              - --zookeeper
-              {{ if .Values.zookeeper.hostname -}}
-              - "{{ .Values.zookeeper.hostname }}:2181"
-              {{- else -}}
-              - "{{ printf "hs-zk-%s" .Release.Name | trunc 63 }}:2181"
-              {{- end }}
-              - --list
+              - sh
+              - -c
+              - >
+                unset KAFKA_HEAP_OPTS &&
+                /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:9092
           initialDelaySeconds: 30
           failureThreshold: 5
           timeoutSeconds: 60
@@ -156,8 +150,22 @@ spec:
           containerPort: 1234
           protocol: TCP
         env:
-          - name : KAFKA_HEAP_OPTS
-            value: "-javaagent:jmx_prometheus_javaagent.jar=1234:/opt/config/prometheus/kafka.yaml -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+          ## We use this to set javaagent so the defaults for Xmx don't kick in
+          ## since we're relying on XX:+UseCGroupMemoryLimitForHeap
+          - name: KAFKA_HEAP_OPTS
+            value: >
+              -javaagent:jmx_prometheus_javaagent.jar=1234:/opt/config/prometheus/kafka.yaml
+          - name: KAFKA_JVM_PERFORMANCE_OPTS
+            value: >
+              -server
+              -XX:+UseG1GC
+              -XX:MaxGCPauseMillis=20
+              -XX:InitiatingHeapOccupancyPercent=35
+              -XX:+DisableExplicitGC
+              -Djava.awt.headless=true
+              -XX:+UnlockExperimentalVMOptions
+              -XX:+UseCGroupMemoryLimitForHeap
+
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         command:

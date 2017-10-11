@@ -16,4 +16,4 @@ sources:
 - https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
 - https://github.com/Yolean/kubernetes-kafka
 - https://github.com/solsson/dockerfiles/tree/master/kafka
-version: 0.2.1
+version: 0.2.2

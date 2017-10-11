@@ -1,0 +1,6 @@
+dependencies:
+- name: zookeeper
+  repository: https://s3.amazonaws.com/charts.pyroclast.io
+  version: 0.2.1
+digest: sha256:41c34c7633e5ca574d386a85bff5fa4db35e7d78738fa3b69b70589c52a80e39
+generated: 2017-10-11T10:44:45.61477517-04:00
