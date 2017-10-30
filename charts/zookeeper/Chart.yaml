@@ -9,4 +9,4 @@ name: zookeeper
 sources:
 - https://github.com/apache/zookeeper
 - https://github.com/kubernetes/contrib/tree/master/statefulset/zookeeper
-version: 0.2.4
+version: 0.2.5

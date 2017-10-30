@@ -1,7 +1,7 @@
 Name: "kf"
 Replicas: 3
 Image: "onyxplatform/kafka"
-ImageTag: 10
+ImageTag: 11
 ImagePullPolicy: "Always"
 resources:
   requests:
