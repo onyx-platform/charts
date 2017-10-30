@@ -165,6 +165,8 @@ spec:
               -Djava.awt.headless=true
               -XX:+UnlockExperimentalVMOptions
               -XX:+UseCGroupMemoryLimitForHeap
+              -XshowSettings:vm
+              -XX:MaxRAMFraction=1
 
         resources:
 {{ toYaml .Values.resources | indent 12 }}
