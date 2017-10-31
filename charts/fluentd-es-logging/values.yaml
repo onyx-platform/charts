@@ -1,0 +1,28 @@
+image: onyxplatform/fluentd
+tag: 2
+# Fluentd only on matching nodes
+# nodeSelector:
+#   fluentdselector: true
+resources:
+  limits:
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+# Fluentd daemonset tolerations
+tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+    operator: Exists
+  - key: dedicated
+    operator: Exists
+# Elasticsearch service host
+
+elasticsearch:
+  # Set provide:true to have an elasticsearch cluster automatically configured.
+  provide: true
+  ### Set hostname and port if provide: false
+  # host: host
+  # port: port
+  cluster:
+    name: "elasticsearch-logging"
