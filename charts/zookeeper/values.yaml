@@ -3,7 +3,7 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 Image: onyxplatform/k8szk
-Tag: 20
+Tag: 21
 Servers: 3
 Cpu: "100m"
 Memory: "512Mi"
@@ -14,6 +14,7 @@ resources:
   limits:
     memory: 512Mi
     cpu: 100m
+ramFraction: 2
 Storage: "50Gi"
 StorageClass : default
 ServerPort: 2888

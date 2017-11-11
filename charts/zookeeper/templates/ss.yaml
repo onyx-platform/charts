@@ -112,7 +112,7 @@ spec:
         - name: ZK_ELECTION_PORT
           value: "{{.Values.LeaderElectionPort}}"
         - name: SERVER_JVMFLAGS
-          value: "-server -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -XX:MaxRAMFraction=1"
+          value: "-server -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -XX:MaxRAMFraction={{ .Values.ramFraction }}"
         command:
         - sh
         - -c
