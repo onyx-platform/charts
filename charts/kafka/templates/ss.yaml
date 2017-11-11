@@ -166,7 +166,7 @@ spec:
               -XX:+UnlockExperimentalVMOptions
               -XX:+UseCGroupMemoryLimitForHeap
               -XshowSettings:vm
-              -XX:MaxRAMFraction=1
+              -XX:MaxRAMFraction={{ .Values.ramFraction }}
 
         resources:
 {{ toYaml .Values.resources | indent 12 }}

@@ -3,6 +3,7 @@ Replicas: 3
 Image: "onyxplatform/kafka"
 ImageTag: 11
 ImagePullPolicy: "Always"
+ramFraction: 2
 resources:
   requests:
     memory: 512Mi
