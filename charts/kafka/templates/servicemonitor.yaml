@@ -1,5 +1,5 @@
 {{ if .Values.ServiceMonitor }}
-apiVersion: monitoring.coreos.com/v1alpha1
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: "{{ printf "%s-kafka-servicemonitor" .Release.Name }}"
