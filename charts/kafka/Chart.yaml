@@ -8,8 +8,7 @@ keywords:
 - zookeeper
 - kafka petset
 maintainers:
-- email: gardner.vickers@onyxplatform.org
-  name: Gardner Vickers
+- name: Gardner Vickers
 name: kafka
 sources:
 - https://github.com/onyxplatform/charts/charts/kafka

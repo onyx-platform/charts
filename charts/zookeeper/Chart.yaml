@@ -3,8 +3,7 @@ description: Centralized service for maintaining configuration information, nami
 home: https://zookeeper.apache.org/
 icon: https://zookeeper.apache.org/images/zookeeper_small.gif
 maintainers:
-- email: gardner.vickers@onyxplatform.org
-  name: Gardner Vickers
+- name: Gardner Vickers
 name: zookeeper
 sources:
 - https://github.com/apache/zookeeper
